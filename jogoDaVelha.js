@@ -1,81 +1,94 @@
-let tabuleiro = ["", "", "", "", "", "", "", "", "", ""];
-let jogoAtivo = true;
+class JogoDaVelha {
+  constructor() {
+    this.tabuleiro = ["", "", "", "", "", "", "", "", ""];
+    this.jogoAtivo = true;
+    this.combinacoesVitoria = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+      [0, 4, 8], [2, 4, 6]             
+    ];
+  }
 
-const combinacoesVitoria = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [0, 4, 8], [2, 4, 6]
-];
+  exibirTabuleiro() {
+    return `${this.tabuleiro[0] || 0} | ${this.tabuleiro[1] || 1} | ${this.tabuleiro[2] || 2}
+---+---+---
+${this.tabuleiro[3] || 3} | ${this.tabuleiro[4] || 4} | ${this.tabuleiro[5] || 5}
+---+---+---
+${this.tabuleiro[6] || 6} | ${this.tabuleiro[7] || 7} | ${this.tabuleiro[8] || 8}`;
+  }
 
-function exibirTabuleiro() {
-    return `${tabuleiro[0] || 0} | ${tabuleiro[1] || 1} | ${tabuleiro[2] || 2}
-    ---+---+---
-    ${tabuleiro[3] || 3} | ${tabuleiro[4] || 4} | ${tabuleiro[5] || 5}
-    ---+---+---
-    ${tabuleiro[6] || 6} | ${tabuleiro[7] || 7} | ${tabuleiro[8] || 8}`;
-}
-
-function jogadaComputador() {
+  jogadaComputador() {
     let posicoesLivres = [];
 
-    for (let i = 0; i < tabuleiro.length; i++) {
-        if (tabuleiro[i] = "") {
-            posicoesLivres.push(i);
-        }
+    for (let i = 0; i < this.tabuleiro.length; i++) {
+      if (this.tabuleiro[i] === "") {
+        posicoesLivres.push(i);
+      }
     }
 
     if (posicoesLivres.length > 0) {
-        let indiceSorteado = Math.floor(Math.random() * posicoesLivres.length);
-        let escolhaComputador = posicoesLivres[indiceSorteado]
+      let indiceSorteado = Math.floor(Math.random() * posicoesLivres.length);
+      let escolhaComputador = posicoesLivres[indiceSorteado];
 
-        tabuleiro[escolhaComputador] = "O"
-        alert(`O computador jogou na posição ${escolhaComputador}`);
+      this.tabuleiro[escolhaComputador] = "O";
+      alert(`O computador jogou na posição ${escolhaComputador}`);
     }
-}
+  }
 
-function checarFimJogo(jogador) {
-    for (let combinacao of combinacoesVitoria) {
-        let[a, b, c] = combinacao;
-        if (tabuleiro[a] !== "" && tabuleiro[a] === tabuleiro[b] && tabuleiro[a] === tabuleiro[c]){
-            alert(`Parabéns, você jogagor ${jogador} venceu!`)
-        }
-    }
-
-    if(!tabuleiro.includes("")) {
-        alert(`IIIIHHH rapaz, deu velha!`)
+  checarFimJogo(jogador) {
+    for (let combinacao of this.combinacoesVitoria) {
+      let [a, b, c] = combinacao;
+      if (
+        this.tabuleiro[a] !== "" &&
+        this.tabuleiro[a] === this.tabuleiro[b] &&
+        this.tabuleiro[a] === this.tabuleiro[c]
+      ) {
+        alert(`Parabéns, jogador ${jogador} venceu!`);
         return true;
+      }
+    }
+
+    if (!this.tabuleiro.includes("")) {
+      alert("IIIIHHH rapaz, deu velha!");
+      return true;
     }
 
     return false;
-}
+  }
 
-while (jogoAtivo) {
-    let mensagem = `Seu simbolo é [X] | Computador é [O]\n${exibirTabuleiro()}\nDigite o numero da posição (0 a 8)`;
-    let entrada = prompt(mensagem);
+  iniciar() {
+    while (this.jogoAtivo) {
+      let mensagem = `Seu símbolo é [X] | Computador é [O]\n${this.exibirTabuleiro()}\nDigite o número da posição (0 a 8):`;
+      let entrada = prompt(mensagem);
 
-    if (entrada === null) {
-        console.log("jogo encerrado antes da hora");
+      if (entrada === null) {
+        console.log("Jogo encerrado antes da hora");
         break;
-    }
+      }
 
-    let posicao = parseInt(entrada);
+      let posicao = parseInt(entrada);
 
-    if (isNaN(posicao) || posicao < 0 || posicao > 8 || tabuleiro[posicao] !== "") {
+      if (isNaN(posicao) || posicao < 0 || posicao > 8 || this.tabuleiro[posicao] !== "") {
         alert("Posição inválida ou já ocupada! Escolha um número livre de 0 a 8.");
         continue;
-    }
+      }
 
-    tabuleiro[posicao] = "X";
+      this.tabuleiro[posicao] = "X";
 
-    if (checarFimJogo("X")) {
-        jogoAtivo = false;
+      if (this.checarFimJogo("X")) {
+        this.jogoAtivo = false;
         break;
-    }
+      }
 
-    jogadaComputador();
+      this.jogadaComputador();
 
-    if (checarFimJogo("O")) {
-        jogoAtivo = false;
+      if (this.checarFimJogo("O")) {
+        this.jogoAtivo = false;
         break;
+      }
     }
+  }
 }
+
+const jogo = new JogoDaVelha();
+jogo.iniciar();
