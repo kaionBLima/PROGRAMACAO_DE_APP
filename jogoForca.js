@@ -1,9 +1,16 @@
+const readline = require('readline');
+
 class JogoDaForca {
   constructor(palavraSecreta, maxTentativas = 6) {
     this.palavraSecreta = palavraSecreta.toUpperCase();
     this.maxTentativas = maxTentativas;
     this.letrasChutadas = [];
     this.erros = 0;
+    
+    this.rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
   }
 
   mostrarPalavra() {
@@ -19,7 +26,7 @@ class JogoDaForca {
       }
     }
 
-    return resultado;
+    return resultado.trim();
   }
 
   estaCompleta() {
@@ -31,42 +38,47 @@ class JogoDaForca {
   }
 
   jogar() {
-    while (!this.jaPerdeu() && !this.estaCompleta()) {
-      let mensagem = `Palavra: ${this.mostrarPalavra()}\nErros: ${this.erros}/${this.maxTentativas}\nDigite uma letra:`;
-      let entrada = prompt(mensagem);
+    if (this.jaPerdeu()) {
+      console.log(`\nVoce atingiu o limite de erros. A palavra era: ${this.palavraSecreta}`);
+      this.rl.close();
+      return;
+    }
 
-      if (entrada === null) {
-        console.log("Jogo cancelado!");
-        return;
-      }
+    if (this.estaCompleta()) {
+      console.log(`\nParabens! Voce venceu! A palavra era: ${this.palavraSecreta}`);
+      this.rl.close();
+      return;
+    }
 
-      let letra = entrada.toUpperCase();
+    console.log(`\n----------------------------------------`);
+    console.log(`Palavra: ${this.mostrarPalavra()}`);
+    console.log(`Erros: ${this.erros}/${this.maxTentativas}`);
+    console.log(`Letras tentadas: ${this.letrasChutadas.join(", ")}`);
+
+    this.rl.question("Digite uma letra: ", (entrada) => {
+      let letra = entrada.trim().toUpperCase();
 
       if (letra.length !== 1) {
-        alert("Por favor, digite apenas UMA letra por vez!");
-        continue;
+        console.log("\nAviso: Por favor, digite apenas UMA letra por vez!");
+        return this.jogar();
       }
 
       if (this.letrasChutadas.includes(letra)) {
-        alert("Você já tentou essa letra! Tente outra.");
-        continue;
+        console.log("\nAviso: Voce ja tentou essa letra! Tente outra.");
+        return this.jogar();
       }
 
       this.letrasChutadas.push(letra);
 
       if (!this.palavraSecreta.includes(letra)) {
         this.erros++;
-        alert(`Que pena! A letra ${letra} não está na palavra`);
+        console.log(`\nIncorreto! A letra ${letra} nao esta na palavra.`);
       } else {
-        alert(`Boaaa! A letra ${letra} existe na palavra`);
+        console.log(`\nCorreto! A letra ${letra} existe na palavra.`);
       }
-    }
 
-    if (this.estaCompleta()) {
-      alert(`Parabéns! Você venceu! A palavra era: ${this.palavraSecreta}`);
-    } else if (this.jaPerdeu()) {
-      alert(`Você atingiu o limite de erros. A palavra era: ${this.palavraSecreta}`);
-    }
+      this.jogar();
+    });
   }
 }
 

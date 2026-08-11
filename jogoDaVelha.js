@@ -1,3 +1,5 @@
+const readline = require('readline');
+
 class JogoDaVelha {
   constructor() {
     this.tabuleiro = ["", "", "", "", "", "", "", "", ""];
@@ -5,8 +7,13 @@ class JogoDaVelha {
     this.combinacoesVitoria = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8],
       [0, 3, 6], [1, 4, 7], [2, 5, 8], 
-      [0, 4, 8], [2, 4, 6]             
+      [0, 4, 8], [2, 4, 6]          
     ];
+    
+    this.rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
   }
 
   exibirTabuleiro() {
@@ -31,7 +38,7 @@ ${this.tabuleiro[6] || 6} | ${this.tabuleiro[7] || 7} | ${this.tabuleiro[8] || 8
       let escolhaComputador = posicoesLivres[indiceSorteado];
 
       this.tabuleiro[escolhaComputador] = "O";
-      alert(`O computador jogou na posição ${escolhaComputador}`);
+      console.log(`\nO computador jogou na posicao ${escolhaComputador}`);
     }
   }
 
@@ -43,13 +50,19 @@ ${this.tabuleiro[6] || 6} | ${this.tabuleiro[7] || 7} | ${this.tabuleiro[8] || 8
         this.tabuleiro[a] === this.tabuleiro[b] &&
         this.tabuleiro[a] === this.tabuleiro[c]
       ) {
-        alert(`Parabéns, jogador ${jogador} venceu!`);
+        console.log(`\nParabens, jogador ${jogador} venceu!`);
+        console.log(`\n${this.exibirTabuleiro()}`);
+        this.jogoAtivo = false;
+        this.rl.close();
         return true;
       }
     }
 
     if (!this.tabuleiro.includes("")) {
-      alert("IIIIHHH rapaz, deu velha!");
+      console.log("\nIIIIHHH rapaz, deu velha!");
+      console.log(`\n${this.exibirTabuleiro()}`);
+      this.jogoAtivo = false;
+      this.rl.close();
       return true;
     }
 
@@ -57,36 +70,33 @@ ${this.tabuleiro[6] || 6} | ${this.tabuleiro[7] || 7} | ${this.tabuleiro[8] || 8
   }
 
   iniciar() {
-    while (this.jogoAtivo) {
-      let mensagem = `Seu símbolo é [X] | Computador é [O]\n${this.exibirTabuleiro()}\nDigite o número da posição (0 a 8):`;
-      let entrada = prompt(mensagem);
+    if (!this.jogoAtivo) return;
 
-      if (entrada === null) {
-        console.log("Jogo encerrado antes da hora");
-        break;
-      }
+    console.log(`\nSeu simbolo e [X] | Computador e [O]`);
+    console.log(`${this.exibirTabuleiro()}`);
 
-      let posicao = parseInt(entrada);
+    this.rl.question("Digite o numero da posicao (0 a 8): ", (entrada) => {
+      let posicao = parseInt(entrada.trim());
 
       if (isNaN(posicao) || posicao < 0 || posicao > 8 || this.tabuleiro[posicao] !== "") {
-        alert("Posição inválida ou já ocupada! Escolha um número livre de 0 a 8.");
-        continue;
+        console.log("\nPosicao invalida ou ja ocupada! Escolha um numero livre de 0 a 8.");
+        return this.iniciar();
       }
 
       this.tabuleiro[posicao] = "X";
 
       if (this.checarFimJogo("X")) {
-        this.jogoAtivo = false;
-        break;
+        return;
       }
 
       this.jogadaComputador();
 
       if (this.checarFimJogo("O")) {
-        this.jogoAtivo = false;
-        break;
+        return;
       }
-    }
+
+      this.iniciar();
+    });
   }
 }
 
