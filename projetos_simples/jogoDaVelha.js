@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 const readline = require('readline');
 
 class JogoDaVelha {
@@ -102,7 +102,6 @@ ${this.tabuleiro[6] || 6} | ${this.tabuleiro[7] || 7} | ${this.tabuleiro[8] || 8
 }
 
 const jogo = new JogoDaVelha();
-=======
 const readline = require('readline');
 
 class JogoDaVelha {
@@ -206,5 +205,4 @@ ${this.tabuleiro[6] || 6} | ${this.tabuleiro[7] || 7} | ${this.tabuleiro[8] || 8
 }
 
 const jogo = new JogoDaVelha();
->>>>>>> 1c81a9dee29d1fef1022bb58073948a46d6f19d4
 jogo.iniciar();
