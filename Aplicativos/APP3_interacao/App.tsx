@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function App() {
 const [texto, setTexto] = useState('');
-const [frase, setFrase] = useState('Madrugada');
+const [frase, setFrase] = useState('Madrugada Fria');
 const [numeroDado, setnumeroDado] = useState (1);
 const imgDado = [
     'dice-1',
@@ -16,7 +16,7 @@ const imgDado = [
     'dice-6',
 ] as const;
 
-const sortear_numDado = () => { 
+function sortear_numDado() { 
   const numSorteado = Math.floor(Math.random() * 6) + 1;
   setnumeroDado(numSorteado)
 
