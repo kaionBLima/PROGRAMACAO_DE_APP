@@ -1,11 +1,20 @@
 import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function App() {
 const [texto, setTexto] = useState('');
 const [frase, setFrase] = useState('Madrugada');
 const [numeroDado, setnumeroDado] = useState (1);
+const imgDado = [
+    'dice-1',
+    'dice-2',
+    'dice-3',
+    'dice-4',
+    'dice-5',
+    'dice-6',
+] as const;
 
 const sortear_numDado = () => { 
   const numSorteado = Math.floor(Math.random() * 6) + 1;
@@ -21,7 +30,7 @@ const sortear_numDado = () => {
     setFrase("Vai dormir")
   }
 
-  };
+};
 
   return (
     <View style={styles.container}>
@@ -38,9 +47,11 @@ const sortear_numDado = () => {
 
       <Text style = {styles.nomeApp}>DiceAPP</Text>
 
-      <Image
-      source={{ uri: `https://githubusercontent.com{numeroDado}.png`}}
-      style={styles.imgDado}
+      <MaterialCommunityIcons
+        style={styles.imgDado}
+        name={imgDado[numeroDado-1]}
+        size={150}
+        color="#850a2b"
       />
 
     <TouchableOpacity style= {styles.botao} onPress={sortear_numDado}>
@@ -91,15 +102,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#2c3e50",
     marginBottom: 15,
-    marginVertical: 50,
+    marginVertical: 30,
   textAlign: "center",
   }, 
 
   imgDado: {
-    width: 130,
-    height: 130,
-    resizeMode: 'contain',
-    marginBottom: 80,
+    textAlign: "center",
   },
 
   botao: {
