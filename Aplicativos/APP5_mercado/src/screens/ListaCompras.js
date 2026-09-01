@@ -10,9 +10,7 @@ export default function ListaCompras() {
   const [textoBusca, setTextoBusca] = useState('');
 
   const adicionarItem = useCallback(() => {
-    if (textoNovoItem === '') {
-      return; 
-    }
+    if (textoNovoItem.trim() === '') return; 
     
     const novoProduto = {
       id: Date.now().toString(),
@@ -26,55 +24,59 @@ export default function ListaCompras() {
 
   const marcarComoComprado = useCallback((idDoItem) => {
     setListaDeItens(listaAntiga => 
-      listaAntiga.map(item => {
-        if (item.id === idDoItem) {
-          return { ...item, comprado: !item.comprado };
-        }
-        return item;
-      })
+      listaAntiga.map(item => 
+        item.id === idDoItem ? { ...item, comprado: !item.comprado } : item
+      )
     );
   }, []);
 
-  const itensFiltrados = useMemo(() => {
-    const apenasNaoComprados = listaDeItens.filter(item => item.comprado === false);
-    return apenasNaoComprados.length;
+  const quantidadePendentes = useMemo(() => {
+    return listaDeItens.filter(item => !item.comprado).length;
   }, [listaDeItens]);
+
+  const itensFiltrados = useMemo(() => {
+    return listaDeItens.filter(item => 
+      item.nome.toLowerCase().includes(textoBusca.toLowerCase())
+    );
+  }, [listaDeItens, textoBusca]);
 
   const mostrarItemNaTela = ({ item }) => (
     <TouchableOpacity
-    style={[styles.item, item.comprado && styles.itemComprado]}
-    onPress={() => marcarComoComprado(item.id)}
+      style={[styles.item, item.comprado && styles.itemComprado]}
+      onPress={() => marcarComoComprado(item.id)}
     >
-        <Text style={styles.comprado && styles.textoComprado}>{item.nome}</Text>
+      <Text style={item.comprado ? styles.textoComprado : null}>
+        {item.nome}
+      </Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-        <Text style={styles.titulo}>Olá, {userName}!</Text>
+      <Text style={styles.titulo}>Olá, {userName}!</Text>
       <Text style={styles.pendentes}>Faltam comprar: {quantidadePendentes}</Text>
 
-      <TextInput
+      <TextInput 
         style={styles.input}
-        placeholder="Pesquisar produto..."
+        placeholder="Pesquisar produto..." 
         value={textoBusca}
         onChangeText={setTextoBusca}
       />
 
       <View style={styles.linhaAdicionar}>
-        <TextInput
+        <TextInput 
           style={[styles.input, { flex: 1, marginBottom: 0 }]}
-          placeholder="Nome do novo produto..."
+          placeholder="Nome do novo produto..." 
           value={textoNovoItem}
           onChangeText={setTextoNovoItem}
         />
-        <TouchableOpacity style={styles.botaoAdd} onPress={adicionarItem}>
+        <TouchableOpacity onPress={adicionarItem} style={styles.botaoAdd}>
           <Text style={styles.textoBotaoAdd}>+</Text>
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={itensFiltrados}
+      <FlatList 
+        data={itensFiltrados} 
         keyExtractor={item => item.id}
         renderItem={mostrarItemNaTela}
       />
@@ -87,46 +89,39 @@ const styles = StyleSheet.create({
     flex: 1, 
     padding: 20, 
     marginTop: 30 
-},
-
+  },
   titulo: { 
     fontSize: 24, 
     fontWeight: 'bold' 
-},
-
+  },
   pendentes: { 
     color: 'red', 
     marginBottom: 15, 
     fontSize: 16 
-},
-
+  },
   input: { 
     borderWidth: 1, 
     borderColor: '#ccc', 
     padding: 10, 
     borderRadius: 5,
     marginBottom: 15 
-},
-
+  },
   linhaAdicionar: { 
     flexDirection: 'row',
-     marginBottom: 20 
-},
-
+    marginBottom: 20 
+  },
   botaoAdd: { 
     backgroundColor: 'green',
     padding: 15,
     marginLeft: 10,
     borderRadius: 5,
     justifyContent: 'center' 
-},
-
+  },
   textoBotaoAdd: { 
     color: 'white',
     fontWeight: 'bold',
     fontSize: 18 
-},
-
+  },
   item: { 
     padding: 15, 
     borderWidth: 1, 
@@ -134,14 +129,12 @@ const styles = StyleSheet.create({
     marginBottom: 10, 
     borderRadius: 5, 
     backgroundColor: 'white' 
-},
-
+  },
   itemComprado: { 
     backgroundColor: '#d4edda' 
-},
-
+  },
   textoComprado: { 
     textDecorationLine: 'line-through', 
     color: 'gray' 
-}
-}); 
+  }
+});
