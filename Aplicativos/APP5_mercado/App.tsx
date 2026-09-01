@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { UserProvider, UserContext } from "./src/contexts/UserContext";
 import Login from "./src/screens/Login";
-import ListaCompras from "./src/screens/ListaCompras"; // Adicione esta linha!
+import ListaCompras from "./src/screens/ListaCompras";
 
 const MainNavigator = () => {
   const { userName } = useContext(UserContext);
